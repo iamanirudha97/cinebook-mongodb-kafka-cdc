@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Assignment brief (third-party course material, do not publish)
+MongoDB_Assignment*.pdf
+MongoDB_Assignment.pdf
