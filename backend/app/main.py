@@ -1,16 +1,14 @@
-
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
+from backend.app.core.logging import configure_logging, get_logger
+from backend.app.db.mongodb import mongodb
+
 from fastapi import FastAPI, HTTPException
-from fastapi.concurrency import run_in_threadpool
 from pymongo.errors import PyMongoError
 
-from backend.app.core.logging import (
-    configure_logging,
-    get_logger,
-)
-from backend.app.db.mongodb import mongodb
+from backend.app.api.movies import router as movies_router
+from backend.app.api.shows import router as shows_router
 
 
 configure_logging()
@@ -21,40 +19,44 @@ logger = get_logger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logger.info("Starting CineBook API")
 
-    await run_in_threadpool(mongodb.connect)
+    await mongodb.connect()
 
     try:
         logger.info("CineBook API startup complete")
         yield
     finally:
         logger.info("Shutting down CineBook API")
-        await run_in_threadpool(mongodb.disconnect)
+        await mongodb.disconnect()
         logger.info("CineBook API shutdown complete")
 
 
 app = FastAPI(
     title="CineBook API",
-    description="Movie booking system powered by MongoDB Atlas and Kafka",
+    description="Movie booking system powered by MongoDB Atlas",
     version="1.0.0",
     lifespan=lifespan,
 )
 
+app.include_router(movies_router)
+app.include_router(shows_router)
+
 
 @app.get("/")
-def root() -> dict[str, str]:
+async def root() -> dict[str, str]:
     return {"message": "Welcome to CineBook API"}
 
 
 @app.get("/healthz")
-def health_check() -> dict[str, str]:
+async def health_check() -> dict[str, str]:
     return {"status": "healthy"}
 
 
 @app.get("/readyz")
-def readiness_check() -> dict[str, str]:
+async def readiness_check() -> dict[str, str]:
     try:
         database = mongodb.get_database()
-        database.command("ping")
+        await database.command("ping")
+
     except (PyMongoError, RuntimeError) as exc:
         logger.warning("MongoDB readiness check failed")
         raise HTTPException(

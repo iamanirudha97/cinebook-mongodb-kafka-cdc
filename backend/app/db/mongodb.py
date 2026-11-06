@@ -1,32 +1,34 @@
-from pymongo import MongoClient
-from pymongo.database import Database
+from typing import Any
+
+from pymongo import AsyncMongoClient
+from pymongo.asynchronous.database import AsyncDatabase
 
 from backend.app.core.config import get_settings
 from backend.app.core.logging import get_logger
+
 
 logger = get_logger(__name__)
 
 
 class MongoDB:
     def __init__(self) -> None:
-        self.client: MongoClient | None = None
-        self.database: Database | None = None
+        self.client: AsyncMongoClient[dict[str, Any]] | None = None
+        self.database: AsyncDatabase[dict[str, Any]] | None = None
 
-    
-    def connect(self) -> None:
+    async def connect(self) -> None:
         settings = get_settings()
 
         logger.info("Connecting to MongoDB Atlas")
 
-        client = MongoClient(
+        client: AsyncMongoClient[dict[str, Any]] = AsyncMongoClient(
             settings.mongodb_uri,
             serverSelectionTimeoutMS=5000,
         )
 
         try:
-            client.admin.command("ping")
+            await client.admin.command("ping")
         except Exception:
-            client.close()
+            await client.close()
             logger.exception("MongoDB connection failed")
             raise
 
@@ -38,17 +40,15 @@ class MongoDB:
             settings.mongodb_db,
         )
 
-
-    def disconnect(self) -> None:
+    async def disconnect(self) -> None:
         if self.client is not None:
-            self.client.close()
+            await self.client.close()
             logger.info("MongoDB connection closed")
 
         self.client = None
         self.database = None
 
-
-    def get_database(self) -> Database:
+    def get_database(self) -> AsyncDatabase[dict[str, Any]]:
         if self.database is None:
             raise RuntimeError("MongoDB connection is not initialized")
 

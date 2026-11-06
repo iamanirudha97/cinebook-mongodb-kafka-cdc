@@ -1,4 +1,3 @@
-
 import logging
 import sys
 
@@ -12,9 +11,16 @@ DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 def configure_logging(level: str = "INFO") -> None:
-    """Configure application logging."""
+    """Configure CineBook application logging."""
+
+    logger = logging.getLogger("cinebook")
+    logger.setLevel(level.upper())
+
+    if logger.handlers:
+        return
 
     handler = logging.StreamHandler(sys.stdout)
+
     handler.setFormatter(
         logging.Formatter(
             fmt=LOG_FORMAT,
@@ -22,20 +28,11 @@ def configure_logging(level: str = "INFO") -> None:
         )
     )
 
-    logger = logging.getLogger("cinebook")
-    logger.setLevel(level.upper())
-
-    # Avoid duplicate handlers when configuring repeatedly.
-    for existing_handler in logger.handlers[:]:
-        logger.removeHandler(existing_handler)
-        existing_handler.close()
-
     logger.addHandler(handler)
-
-    # Prevent records from also propagating to the root logger.
     logger.propagate = False
 
 
 def get_logger(name: str) -> logging.Logger:
-    """Return a named CineBook logger."""
+    """Get a logger within the CineBook namespace."""
+
     return logging.getLogger(f"cinebook.{name}")
