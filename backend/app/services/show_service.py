@@ -38,3 +38,4 @@ class ShowService:
             return None
 
         return ShowDetailResponse.model_validate(document)
+        

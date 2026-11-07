@@ -31,3 +31,4 @@ class MovieService:
             return None
 
         return MovieResponse.model_validate(document)
+        

@@ -9,7 +9,9 @@ from pymongo.errors import PyMongoError
 
 from backend.app.api.movies import router as movies_router
 from backend.app.api.shows import router as shows_router
+from backend.app.api.bookings import router as bookings_router
 
+from backend.app.api.users import router as users_router
 
 configure_logging()
 logger = get_logger(__name__)
@@ -39,6 +41,8 @@ app = FastAPI(
 
 app.include_router(movies_router)
 app.include_router(shows_router)
+app.include_router(bookings_router)
+app.include_router(users_router)
 
 
 @app.get("/")
