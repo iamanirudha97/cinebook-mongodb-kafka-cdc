@@ -16,6 +16,9 @@ from backend.app.services.booking_service import BookingService
 from backend.app.repositories.user_repository import UserRepository
 from backend.app.services.user_service import UserService
 
+from backend.app.repositories.analytics_repository import AnalyticsRepository
+from backend.app.services.analytics_service import AnalyticsService
+
 
 def get_database() -> AsyncDatabase[dict[str, Any]]:
     return mongodb.get_database()
@@ -94,3 +97,21 @@ def get_user_service(
         user_repository=user_repository,
         booking_repository=booking_repository,
     )
+
+
+def get_analytics_repository(
+    database: Annotated[
+        AsyncDatabase[dict[str, Any]],
+        Depends(get_database),
+    ],
+) -> AnalyticsRepository:
+    return AnalyticsRepository(database)
+
+
+def get_analytics_service(
+    repository: Annotated[
+        AnalyticsRepository,
+        Depends(get_analytics_repository),
+    ],
+) -> AnalyticsService:
+    return AnalyticsService(repository)

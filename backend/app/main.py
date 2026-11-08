@@ -12,6 +12,7 @@ from backend.app.api.shows import router as shows_router
 from backend.app.api.bookings import router as bookings_router
 
 from backend.app.api.users import router as users_router
+from backend.app.api.analytics import router as analytics_router
 
 configure_logging()
 logger = get_logger(__name__)
@@ -39,10 +40,12 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# router
 app.include_router(movies_router)
 app.include_router(shows_router)
 app.include_router(bookings_router)
 app.include_router(users_router)
+app.include_router(analytics_router)
 
 
 @app.get("/")
