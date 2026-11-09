@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build outputs & Vite cache
+dist/
+dist-ssr/
+.vite/
+*.tsbuildinfo
+
+# Local environment variables (keep .env.example tracked)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs & OS files
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.DS_Store
