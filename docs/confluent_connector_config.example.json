@@ -1,0 +1,22 @@
+{
+    "config": {
+        "output.data.format": "JSON",
+        "output.key.format": "JSON",
+        "cloud.environment": "prod",
+        "cloud.provider": "aws",
+        "collection": "bookings",
+        "connection.host": "<MONGODB_ATLAS_HOST>",
+        "connection.password": "<MONGODB_CONNECTOR_PASSWORD>",
+        "connection.user": "<MONGODB_CONNECTOR_USERNAME>",
+        "database": "cinebook",
+        "kafka.api.key": "<KAFKA_API_KEY>",
+        "kafka.api.secret": "<KAFKA_API_SECRET>",
+        "kafka.auth.mode": "KAFKA_API_KEY",
+        "kafka.endpoint": "<KAFKA_BOOTSTRAP_ENDPOINT>",
+        "kafka.region": "us-east-2",
+        "name": "MongoDbAtlasSourceConnector_0",
+        "tasks.max": "1",
+        "topic.prefix": "cdc-prefix",
+        "connector.class": "MongoDbAtlasSource"
+    }
+}
